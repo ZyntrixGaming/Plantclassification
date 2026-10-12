@@ -237,10 +237,23 @@ classifyButton.addEventListener("click", async () => {
 
     resultBox.hidden = false;
 
-          window.AppInventor.setWebViewString(
-  best.className + " | " +
-  (best.probability * 100).toFixed(1) + "%"
-);
+  // Send result to MIT App Inventor only when available.
+
+    if (
+
+      window.AppInventor &&
+
+      typeof window.AppInventor.setWebViewString === "function"
+
+    ) {
+
+      window.AppInventor.setWebViewString(
+
+        best.className + " | " + confidenceText
+
+      );
+
+    
     status.textContent = "Classification complete!";
 
     console.log("AI predictions:", predictions);
