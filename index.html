@@ -222,7 +222,7 @@ classifyButton.addEventListener("click", async () => {
     status.textContent = "Analyzing your plant...";
     clearResult();
 
-    const predictions = await model.predict(canvas);
+    const predictions = await model.predict(preview);
 
     if (!predictions || predictions.length === 0) {
       throw new Error("No predictions received from the AI.");
@@ -243,7 +243,7 @@ classifyButton.addEventListener("click", async () => {
       typeof window.AppInventor.setWebViewString === "function") {
 
       window.AppInventor.setWebViewString(
-        best.className + " | " + confidenceText );
+        best.className + " | " + (best.probability * 100) );
       }
 
     
