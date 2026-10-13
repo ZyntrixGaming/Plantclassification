@@ -239,12 +239,12 @@ classifyButton.addEventListener("click", async () => {
 
   // Send result to MIT App Inventor only when available.
 
-    if (window.AppInventor &&
-      typeof window.AppInventor.setWebViewString === "function") {
+   // if (window.AppInventor &&
+     // typeof window.AppInventor.setWebViewString === "function") {
 
-      window.AppInventor.setWebViewString(
-        best.className + " | " + (best.probability * 100) );
-      }
+     // window.AppInventor.setWebViewString(
+      //  best.className + " | " + (best.probability * 100) );
+     // }
 
     
     status.textContent = "Classification complete!";
