@@ -222,7 +222,7 @@ classifyButton.addEventListener("click", async () => {
     status.textContent = "Analyzing your plant...";
     clearResult();
 
-    const predictions = await model.predict(preview);
+    const predictions = await model.predict(canvas);
 
     if (!predictions || predictions.length === 0) {
       throw new Error("No predictions received from the AI.");
