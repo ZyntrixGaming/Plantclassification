@@ -74,11 +74,13 @@
     <h2>Classification Result</h2>
     <p id="plantLabel"></p>
     <p id="confidence"></p>
+    <p id="plantLabel1"></p>
+    <p id="confidence1"></p>
   </div>
 
   <script>
-    const MODEL_URL =
-      "https://teachablemachine.withgoogle.com/models/vASHGJfBi/";
+    const MODEL1_URL = "https://teachablemachine.withgoogle.com/models/vASHGJfBi/";
+    const MODEL2_URL = "https://teachablemachine.withgoogle.com/models/QPasK78JP/";
 
     const camera = document.getElementById("camera");
     const canvas = document.getElementById("photo");
@@ -93,8 +95,11 @@
     const resultBox = document.getElementById("result");
     const plantLabel = document.getElementById("plantLabel");
     const confidence = document.getElementById("confidence");
+     const plantLabel1 = document.getElementById("plantLabel1");
+    const confidence1 = document.getElementById("confidence1");
 
-    let model = null;
+    let model1 = null;
+    let model2 = null;
     let stream = null;
     let busy = false;
     let imageReady = false;
@@ -102,10 +107,14 @@
 
     async function loadModel() {
       try {
-        model = await tmImage.load(
-          MODEL_URL + "model.json",
-          MODEL_URL + "metadata.json"
+         model1 = await tmImage.load(
+          MODEL1_URL + "model.json",
+          MODEL1_URL + "metadata.json"
         );
+
+        model2 = await tmImage.load(
+          MODEL2_URL + "model.json",
+          MODEL2_URL + "metadata.json");
 
         status.textContent = "Model ready. Take a plant photo.";
         startButton.disabled = false;
@@ -210,8 +219,8 @@
 
 classifyButton.addEventListener("click", async () => {
   try {
-    if (!model) {
-      throw new Error("AI model is not loaded.");
+    if (!model1 || !model2) {
+      throw new Error("AI models are not loaded.");
     }
 
     // Use the picture captured by the camera.
@@ -222,33 +231,41 @@ classifyButton.addEventListener("click", async () => {
     status.textContent = "Analyzing your plant...";
     clearResult();
 
-    const predictions = await model.predict(canvas);
+    const predictions1 = await model1.predict(canvas);    
 
-    if (!predictions || predictions.length === 0) {
+    if (!predictions1 || predictions1.length === 0) {
       throw new Error("No predictions received from the AI.");
     }
+    predictions1.sort((a, b) => b.probability - a.probability);
+    const best = predictions1[0];
+    plantLabel.textContent = "Color: " + best.className;
+    confidence.textContent = "Confidence: " + (best.probability * 100).toFixed(1) + "%";
+    //resultBox.hidden = true;
 
-    predictions.sort((a, b) => b.probability - a.probability);
-    const best = predictions[0];
-
-    plantLabel.textContent = "Plant: " + best.className;
-    confidence.textContent =
-      "Confidence: " + (best.probability * 100).toFixed(1) + "%";
-
+    const predictions2 = await model2.predict(canvas);
+     if (!predictions2 || predictions2.length === 0) {
+      throw new Error("No predictions received from the AI.");
+    }
+    predictions2.sort((a, b) => b.probability - a.probability);
+    const best1 = predictions2[0];
+    plantLabel1.textContent = "Shape: " + best1.className;
+    confidence1.textContent = "Confidence: " + (best1.probability * 100).toFixed(1) + "%";
     resultBox.hidden = true;
+
 
   // Send result to MIT App Inventor only when available.
 
      if (window.AppInventor &&
       typeof window.AppInventor.setWebViewString === "function") {
       window.AppInventor.setWebViewString(
-       best.className + " | " + (best.probability * 100) );
+       best.className + " | " + (best.probability * 100) + " | " + best1.className + (best1.probability * 100) );
       }
 
     
     status.textContent = "";
 
-    console.log("AI predictions:", predictions);
+    console.log("AI predictions:", predictions1);
+    console.log("AI predictions:", predictions2);
 
   } catch (error) {
     status.textContent = "Problem: " + error.message;
