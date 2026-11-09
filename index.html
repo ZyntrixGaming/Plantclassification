@@ -40,8 +40,9 @@
     }
 
     #result {
-      margin-top: 4px;
-      padding: 3px;
+      
+      padding-top: 3%;
+	  padding-right: 3%;
       background: #f2f7f0;
       border-radius: 4px;
 	  font-size:small;
@@ -72,7 +73,11 @@
   </div>
 
   <div id="result" hidden>
-    <h4>Classification: </h4> 
+    <!--<h4>Classification: </h4>-->
+	<div >
+	   <label id="lblName"> 
+       <label id="lblType"> 	  
+	</div>
 	
     <p id="plantLabel" ></p>
     <p id="confidence" ></p>	
@@ -95,9 +100,9 @@
     const classifyButton = document.getElementById("classify");
 
     const resultBox = document.getElementById("result");
-    const plantLabel = document.getElementById("plantLabel");
+    const plantLabel = document.getElementById("lblName");
     const confidence = document.getElementById("confidence");
-     const plantLabel1 = document.getElementById("plantLabel1");
+     const plantLabel1 = document.getElementById("lblType");
     const confidence1 = document.getElementById("confidence1");
 
     let model1 = null;
@@ -240,8 +245,8 @@ classifyButton.addEventListener("click", async () => {
     }
     predictions1.sort((a, b) => b.probability - a.probability);
     const best = predictions1[0];
-    plantLabel.textContent = "Plant Name : " + best.className;
-    confidence.textContent = "Confidence : " + (best.probability * 100).toFixed(1) + "%";
+    plantLabel.textContent = "Plant Name : " + best.className + " (" + "Confidence : " + (best.probability * 100).toFixed(1) + "%"  + ")";
+   // confidence.textContent = "Confidence : " + (best.probability * 100).toFixed(1) + "%";
     //resultBox.hidden = true;
 
     const predictions2 = await model2.predict(canvas);
@@ -250,8 +255,8 @@ classifyButton.addEventListener("click", async () => {
     }
     predictions2.sort((a, b) => b.probability - a.probability);
     const best1 = predictions2[0];
-    plantLabel1.textContent = "Shape: " + best1.className;
-    confidence1.textContent = "Confidence : " + (best1.probability * 100).toFixed(1) + "%";
+    //plantLabel1.textContent = "Plant Type: " + best1.className + "(" + "Confidence : " + (best1.probability * 100).toFixed(1) + "%";  + ")";;
+    //confidence1.textContent = "Confidence : " + (best1.probability * 100).toFixed(1) + "%";
     resultBox.hidden = false;
 
 
