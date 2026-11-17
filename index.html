@@ -46,7 +46,6 @@
      <!-- background: #f2f7f0;-->
       border-radius: 4px;
 	  font-size:15px;
-	  color:green;
     }
 
     #status { color: #555; }
@@ -74,16 +73,18 @@
 
   <div id="result" hidden>
     <!--<h4>Classification: </h4>-->
-	<div >
+	
+	 <div >
 	   <label id="lblName"> 
        <label id="lblType"> 	  
 	</div>
-	
     <p id="plantLabel" ></p>
     <p id="confidence" ></p>	
     <p id="plantLabel1" hidden></p>
     <p id="confidence1" hidden></p>
   </div>
+  
+ 
 
   <script>
     const MODEL1_URL = "https://teachablemachine.withgoogle.com/models/418AqeIYa/";
@@ -245,9 +246,14 @@ classifyButton.addEventListener("click", async () => {
     }
     predictions1.sort((a, b) => b.probability - a.probability);
     const best = predictions1[0];
-    plantLabel.textContent = "Plant Name : " + best.className + " (" + "Confidence : " + (best.probability * 100).toFixed(1) + "%"  + ")";
+   // plantLabel.textContent = "Plant Name :  " + best.className + " (" + "Confidence : " + (best.probability * 100).toFixed(1) + "%"  + ")";
    // confidence.textContent = "Confidence : " + (best.probability * 100).toFixed(1) + "%";
     //resultBox.hidden = true;
+	const plantName = best.className.replace(/Invasive -/gi, "").replace(/ -/g, " ");	
+	  plantLabel.innerHTML ='<span style="color:black;">Plant Name :</span> ' +
+    '<b style="color:green;">' + plantName + '</b> ' +
+    '<span style="color:green;">(Confidence : ' +
+    (best.probability * 100).toFixed(1) + '%)</span>';
 
     const predictions2 = await model2.predict(canvas);
      if (!predictions2 || predictions2.length === 0) {
